@@ -18,4 +18,4 @@
                   run: |
                     echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
                     chmod 600 ~/.ssh/github_actions
-                    ssh -i ~/.ssh/github_actions $SSH_USERNAME@$SSH_HOST "echo 'Abdullah Alahiadeb'"
+                    ssh -i ~/.ssh/github_actions $SSH_USERNAME@$SSH_HOST "cd /docker-compose-flask-app && git pull origin main && docker compose up --build -d"
