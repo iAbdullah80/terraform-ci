@@ -4,18 +4,20 @@
       push:
         branches:
           - main
-
     jobs:
-        deploy:
-            runs-on: self-hosted
+      deploy:
+          runs-on: self-hosted
+          strategy:
+            matrix:
+              node: ["192.168.2.1", "192.168.2.2"]
 
-            steps:
-                - name: SSH
-                  env:
-                    SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-                    SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-                    SSH_HOST: ${{ secrets.SSH_HOST }}
-                  run: |
-                    echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
-                    chmod 600 ~/.ssh/github_actions
-                    ssh -i ~/.ssh/github_actions $SSH_USERNAME@$SSH_HOST "cd /docker-compose-flask-app && git pull origin main && docker compose up --build -d"
+          steps:
+              - name: SSH ${{ matrix.node }}
+                env:
+                  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                  SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                run: |
+                  echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
+                  chmod 600 ~/.ssh/github_actions
+                  ssh -i ~/.ssh/github_actions $SSH_USERNAME@$SSH_HOST "cd /docker-compose-flask-app && git pull origin main && docker compose up --build -d"
